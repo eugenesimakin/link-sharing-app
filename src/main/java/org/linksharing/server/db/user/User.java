@@ -13,14 +13,11 @@ import java.util.Map;
 public class User {
 
     @Id
-    @Column(name = "username", nullable = false, unique = true)
-    private String username;
-
-    @Column(name = "full_name")
-    private String fullName;
-
     @Column(name = "email")
     private String email;
+
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @Column(name = "password")
     private String password;
