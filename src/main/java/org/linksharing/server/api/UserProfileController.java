@@ -4,14 +4,14 @@ import org.linksharing.server.db.user.User;
 import org.linksharing.server.db.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
 
-@Controller
+@RestController
 public class UserProfileController {
 
     UserRepository userRepository;
@@ -27,19 +27,31 @@ public class UserProfileController {
     }
 
     @RequestMapping("/")
-    public String showHomePage() {
-        System.out.println("home_page");
-        return "home_page";
+    public ModelAndView showHomePage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("home_page.html");
+        return modelAndView;
     }
 
-    @GetMapping("/login_page")
-    public String showLoginPage() {
-        return "login_page";
+    @RequestMapping("/login_page")
+    public ModelAndView showLoginPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login_page.html");
+        return modelAndView;
     }
 
-    @GetMapping("/registration_page")
-    public String showRegistrationPage() {
-        return "registration_page";
+    @RequestMapping("/registration_page")
+    public ModelAndView showRegistrationPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("registration_page.html");
+        return modelAndView;
+    }
+
+    @RequestMapping("/profile_details_page")
+    public ModelAndView showProfileDetailsPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("profile_details_page.html");
+        return modelAndView;
     }
 
     @PostMapping("/registration_page")
