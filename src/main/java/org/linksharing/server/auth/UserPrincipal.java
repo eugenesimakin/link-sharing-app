@@ -12,7 +12,7 @@ import java.util.List;
 public class UserPrincipal implements UserDetails {
 
     private static final List<GrantedAuthority> ROLE_USER = Collections
-            .unmodifiableList(AuthorityUtils.createAuthorityList("ADMIN", "MANAGER", "SIMPLE_USER"));
+            .unmodifiableList(AuthorityUtils.createAuthorityList("ROLE_USER"));
 
 
     private final User user;

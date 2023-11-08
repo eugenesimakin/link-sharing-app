@@ -33,44 +33,37 @@ public class UserProfileController {
         return modelAndView;
     }
 
-    @RequestMapping("/login_page")
+    @RequestMapping("/login")
     public ModelAndView showLoginPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("login_page.html");
         return modelAndView;
     }
 
-    @RequestMapping("/registration_page")
+    @RequestMapping("/registration")
     public ModelAndView showRegistrationPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("registration_page.html");
         return modelAndView;
     }
 
-    @RequestMapping("/profile_details_page")
+    @RequestMapping("/profile_details")
     public ModelAndView showProfileDetailsPage() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("profile_details_page.html");
         return modelAndView;
     }
 
-    @PostMapping("/registration_page")
+    @PostMapping("/registration")
     public String registerUser(@ModelAttribute User user, Model model) {
         model.addAttribute("user", user);
 
-        if (userExists(user)) {
-            System.out.println("Email already exists. Please login");
+        if (userRepository.existsByEmail(user.getEmail())) {
             return "/login_page";
         }
 
-        user.setCreatedOn(new Timestamp(System.currentTimeMillis()));
-        user.setLinks(new HashMap<>());
         userRepository.save(user);
 
         return "/registration_success";
-    }
-
-    private boolean userExists(User user) {
-        return userRepository.findByEmail(user.getEmail()) != null;
     }
 }
