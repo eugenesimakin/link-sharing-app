@@ -36,6 +36,21 @@ public class UserProfileController {
         return modelAndView;
     }
 
+    @PostMapping("/loginUser")
+    public String loginUser(@RequestParam("email") String email,
+                            @RequestParam("password") String password) {
+
+        if (!userRepository.existsByEmail(email)) {
+            return "Email not found. Register first";
+        } else {
+            User user = userRepository.findByEmail(email);
+            if (user.getPassword().equals("Encrypted" + password)) {
+                return "User validation success.";
+            }
+            return "Validation failed";
+        }
+    }
+
     @GetMapping("/registration")
     public ModelAndView showRegistrationPage() {
         ModelAndView modelAndView = new ModelAndView();

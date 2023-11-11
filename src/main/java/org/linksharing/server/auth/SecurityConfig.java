@@ -20,6 +20,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .requestMatchers(antMatcher("/registration_page.html")).permitAll()
                 .requestMatchers(antMatcher("/registerUser")).permitAll()
+                .requestMatchers(antMatcher("/loginUser")).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
