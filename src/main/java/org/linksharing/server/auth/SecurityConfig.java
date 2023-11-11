@@ -19,6 +19,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests()
                 .requestMatchers(antMatcher("/registration_page.html")).permitAll()
+                .requestMatchers(antMatcher("/registerUser")).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

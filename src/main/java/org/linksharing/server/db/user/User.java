@@ -14,13 +14,13 @@ import java.util.Map;
 public class User {
 
     @Id
-    @Column(name = "email")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "created_on")
@@ -39,4 +39,8 @@ public class User {
         links = new HashMap<>();
     }
 
+    public String encryptPassword(String password) {
+        setPassword("Encrypted" + password);  //special encryption will be added later
+        return this.password;
+    }
 }
