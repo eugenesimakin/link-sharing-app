@@ -22,10 +22,10 @@
 <body>
 <main>
     <h1 class="mb-4 text-center">Links</h1>
-    <form action="/loginUser" method="post" enctype="application/x-www-form-urlencoded" autocomplete="on">
+    <form action="/login" method="post" autocomplete="on">
         <div class="mb-3">
             <label for="emailInput" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" name="email">
+            <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp" name="username">
         </div>
         <div class="mb-4">
             <label for="passwordInput" class="form-label">Password</label>
@@ -35,7 +35,7 @@
             <button type="submit" class="btn btn-primary">Login</button>
         </div>
         <div class="text-center">
-            <p class="mb-1">Not a member? <a href="/registration_page.html">Register</a></p>
+            <p class="mb-1">Not a member? <a href="/register">Register</a></p>
             <p class="mb-1">or sign in with:</p>
 
             <button type="button" class="btn btn-link btn-floating mx-1">

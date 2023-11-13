@@ -4,17 +4,21 @@ import org.linksharing.server.db.user.User;
 import org.linksharing.server.db.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-@RestController
-public class UserProfileController {
+@Controller
+public class AuthController {
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserProfileController(UserRepository userRepository) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/api/check")
@@ -36,46 +40,28 @@ public class UserProfileController {
         return modelAndView;
     }
 
-    @PostMapping("/loginUser")
-    public String loginUser(@RequestParam("email") String email,
-                            @RequestParam("password") String password) {
-
-        if (!userRepository.existsByEmail(email)) {
-            return "Email not found. Register first";
-        } else {
-            User user = userRepository.findByEmail(email);
-            if (user.getPassword().equals("Encrypted" + password)) {
-                return "User validation success.";
-            }
-            return "Validation failed";
-        }
+    @GetMapping("/register")
+    public String showRegistrationPage() {
+        return "registration_page.html";
     }
 
-    @GetMapping("/registration")
-    public ModelAndView showRegistrationPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("newUser", new User());
-        modelAndView.setViewName("registration_page.html");
-        return modelAndView;
-    }
-
-    @PostMapping("/registerUser")
+    @PostMapping("/register")
     public String registerUser(@RequestParam("username") String username,
                                @RequestParam("email") String email,
                                @RequestParam("password") String password) {
 
         if (userRepository.existsByEmail(email)) {
-            return "/login";
+            return "redirect:/login?userExists";
         }
 
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
-        user.encryptPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
 
         userRepository.save(user);
 
-        return "New user added. Pleas login";
+        return "redirect:/login";
     }
 
     @GetMapping("/profile_details")

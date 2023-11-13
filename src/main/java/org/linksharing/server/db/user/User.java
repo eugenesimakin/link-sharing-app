@@ -39,8 +39,4 @@ public class User {
         links = new HashMap<>();
     }
 
-    public String encryptPassword(String password) {
-        setPassword("Encrypted" + password);  //special encryption will be added later
-        return this.password;
-    }
 }

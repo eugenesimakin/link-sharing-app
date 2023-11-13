@@ -18,13 +18,11 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests()
-                .requestMatchers(antMatcher("/registration_page.html")).permitAll()
-                .requestMatchers(antMatcher("/registerUser")).permitAll()
-                .requestMatchers(antMatcher("/loginUser")).permitAll()
+                .requestMatchers(antMatcher("/register")).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login_page.html").permitAll()
+                .loginPage("/login").permitAll()
                 .and()
                 .logout().permitAll();
         return http.build();

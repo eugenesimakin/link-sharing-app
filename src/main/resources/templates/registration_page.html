@@ -22,24 +22,24 @@
 <body>
 <main>
     <h1 class="mb-4 text-center">Links</h1>
-    <form action="/registerUser" method="post" enctype="application/x-www-form-urlencoded" autocomplete="on">
+    <form action="/register" method="post" enctype="application/x-www-form-urlencoded" autocomplete="on">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="username">
+            <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="username" value="test1">
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" value="test1@mail.com">
         </div>
         <div class="mb-4">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password">
+            <input type="password" class="form-control" id="password" name="password" value="password123">
         </div>
         <div class="d-grid mb-4">
             <button type="submit" class="btn btn-primary">Register</button>
         </div>
         <div class="text-center">
-            <p class="mb-1">Already a member? <a href="/login_page.html">Login</a></p>
+            <p class="mb-1">Already a member? <a href="/login">Login</a></p>
             <p class="mb-1">or sign up with:</p>
 
             <button type="button" class="btn btn-link btn-floating mx-1">
