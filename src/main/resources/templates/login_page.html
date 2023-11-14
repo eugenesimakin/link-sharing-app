@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,6 +22,12 @@
 <body>
 <main>
     <h1 class="mb-4 text-center">Links</h1>
+    <div th:if="${param.error}">
+        Invalid username or password or both.
+    </div>
+    <div th:if="${param.logout}">
+        You have been logged out.
+    </div>
     <form action="/login" method="post" autocomplete="on">
         <div class="mb-3">
             <label for="emailInput" class="form-label">Email address</label>
