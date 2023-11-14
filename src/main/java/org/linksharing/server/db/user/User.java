@@ -6,6 +6,7 @@ import org.linksharing.server.links.Link;
 import org.linksharing.server.links.LinksJsonConverter;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -13,16 +14,13 @@ import java.util.Map;
 public class User {
 
     @Id
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "full_name")
-    private String fullName;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "created_on")
@@ -34,5 +32,11 @@ public class User {
     @Column(name = "links")
     @Convert(converter = LinksJsonConverter.class)
     private Map<String, Link> links;
+
+    @PrePersist
+    public void setTimeAndLinks() {
+        createdOn = new Timestamp(System.currentTimeMillis());
+        links = new HashMap<>();
+    }
 
 }
