@@ -22,12 +22,6 @@
 <body>
 <main>
     <h1 class="mb-4 text-center">Links</h1>
-    <div th:if="${param.error}">
-        Invalid username or password or both.
-    </div>
-    <div th:if="${param.logout}">
-        You have been logged out.
-    </div>
     <form action="/login" method="post" autocomplete="on">
         <div class="mb-3">
             <label for="emailInput" class="form-label">Email address</label>
