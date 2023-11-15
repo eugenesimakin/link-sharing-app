@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
@@ -15,16 +14,18 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeRequests()
-                .requestMatchers(antMatcher("/register")).permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login").permitAll()
-                .and()
-                .logout().permitAll();
+        http.authorizeHttpRequests(c -> c
+                .requestMatchers(antMatcher("/register"))
+                .permitAll()
+                .requestMatchers(antMatcher("/api/check"))
+                .permitAll()
+                .anyRequest()
+                .authenticated()
+        );
+        http.formLogin(c -> c
+                .loginPage("/login")
+                .permitAll()
+        );
         return http.build();
     }
 }

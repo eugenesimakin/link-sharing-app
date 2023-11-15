@@ -3,10 +3,11 @@ package org.linksharing.server.api;
 import org.linksharing.server.db.user.User;
 import org.linksharing.server.db.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -19,18 +20,6 @@ public class AuthController {
     public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-    }
-
-    @GetMapping("/api/check")
-    ResponseEntity<?> healthCheck() {
-        return ResponseEntity.ok("Ok");
-    }
-
-    @GetMapping("/")
-    public ModelAndView showHomePage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("home_page.html");
-        return modelAndView;
     }
 
     @GetMapping("/login")
@@ -62,12 +51,5 @@ public class AuthController {
         userRepository.save(user);
 
         return "redirect:/login";
-    }
-
-    @GetMapping("/profile_details")
-    public ModelAndView showProfileDetailsPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("profile_details_page.html");
-        return modelAndView;
     }
 }
