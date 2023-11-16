@@ -11,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <style>
         .col-fixed {
@@ -32,18 +33,8 @@
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg py-3">
-    <div class="container px-5">
-        <a class="navbar-brand">
-            <span class="fw-bolder text-primary">Links</span>
-        </a>
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 small fw-bolder">
-            <li class="nav-item"><a class="nav-link px-3" href="/edit/links">Add/Remove Links</a></li>
-            <li class="nav-item"><a class="nav-link px-3" href="/edit/profile">Profile Details</a></li>
-            <li class="nav-item"><a class="nav-link px-3" href="/logout">Logout</a></li>
-        </ul>
-    </div>
-</nav>
+
+<nav th:replace="~{fragments/profile_navbar}"></nav>
 
 <main id="main" class="bg-light-subtle py-5"></main>
 
@@ -77,19 +68,31 @@
             </div>
         </div>
         `
-        <div v-if="!state.loading && !state.loadingError" class="col-fixed d-flex flex-row gap-3 mt-3">
+        <div v-if="!state.loading && !state.loadingError" class="col-fixed d-flex flex-row gap-3 mb-3">
             <button @click="state.addEmptyLink" :disabled="state.saving" class="btn btn-outline-secondary flex-fill">
                 Add New Link
             </button>
             <button @click="handleSave" v-if="state.links.length > 0" :disabled="state.saving"
                     class="btn btn-primary flex-grow-1">
-                Save
+                <span v-if="state.saving" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true"></span>
+                {{ state.saving ? 'Saving...' : 'Save' }}
             </button>
         </div>
-        <div v-if="state.savingError" class="col-fixed">
-            <p>Error: {{ state.savingError }}</p>
+        <div v-if="state.savingError" class="col-fixed alert alert-danger">
+            <h4 class="alert-heading">Error while saving links</h4>
+            <p>
+                Try again later.
+                {{ state.savingError }}
+            </p>
         </div>
-        <div v-if="!state.loading && state.loadingError" class="col-fixed">{{ state.error }}</div>
+        <div v-if="state.loadingError" class="col-fixed alert alert-danger">
+            <h4 class="alert-heading">Error while loading links</h4>
+            <p class="mb-0">
+                Try to reload the page.
+                {{ state.loadingError }}
+            </p>
+        </div>
     </div>
 </script>
 
@@ -118,9 +121,10 @@
                     state.savingError = null;
                     state.saving = true;
                     try {
-                        // todo: save
+                        const resp = await axios.post('/api/links', state.links);
+                        state.links = resp.data;
                     } catch (err) {
-                        state.savingError = err;
+                        state.savingError = err.message;
                     } finally {
                         state.saving = false;
                     }
@@ -130,9 +134,10 @@
             onMounted(() => {
                 (async () => {
                     try {
-                        // todo: fetch links data from the server
+                        const resp = await axios.get('/api/links');
+                        state.links = resp.data;
                     } catch (err) {
-                        state.loadingError = err;
+                        state.loadingError = err.message;
                     } finally {
                         state.loading = false;
                     }

@@ -1,4 +1,4 @@
-package org.linksharing.server.db.user;
+package org.linksharing.server.user;
 
 import jakarta.persistence.*;
 import lombok.Data;

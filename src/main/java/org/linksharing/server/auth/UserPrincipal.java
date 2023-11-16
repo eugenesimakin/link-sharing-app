@@ -1,6 +1,6 @@
 package org.linksharing.server.auth;
 
-import org.linksharing.server.db.user.User;
+import org.linksharing.server.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;

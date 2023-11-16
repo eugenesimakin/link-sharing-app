@@ -1,14 +1,13 @@
-package org.linksharing.server.api;
+package org.linksharing.server.auth;
 
-import org.linksharing.server.db.user.User;
-import org.linksharing.server.db.user.UserRepository;
+import org.linksharing.server.user.User;
+import org.linksharing.server.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class AuthController {
@@ -23,10 +22,8 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public ModelAndView showLoginPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login_page.html");
-        return modelAndView;
+    public String showLoginPage() {
+        return "login_page.html";
     }
 
     @GetMapping("/register")
