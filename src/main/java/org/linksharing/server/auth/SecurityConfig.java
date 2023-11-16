@@ -26,7 +26,12 @@ public class SecurityConfig {
                 .authenticated()
         );
         http.formLogin(c -> c
+                .usernameParameter("email")
                 .loginPage("/login")
+                .permitAll()
+        );
+        http.logout(c -> c
+                .logoutUrl("/logout")
                 .permitAll()
         );
         http.csrf(AbstractHttpConfigurer::disable);
