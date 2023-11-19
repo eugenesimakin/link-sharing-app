@@ -21,6 +21,9 @@
 </head>
 <body>
 <main>
+    <div class="mb-4 text-center">
+        <div class="text-success" th:if="${param.logout}">You have been logged out.</div>
+    </div>
     <h1 class="mb-4 text-center">Links</h1>
     <form th:action="@{/login}" method="post" autocomplete="on">
         <div class="mb-3">
@@ -30,6 +33,9 @@
         <div class="mb-4">
             <label for="passwordInput" class="form-label">Password</label>
             <input type="password" class="form-control" id="passwordInput" name="password">
+        </div>
+        <div class="mb-4 text-center">
+            <div class="text-danger" th:if="${param.error}">Wrong username or password. Or both.</div>
         </div>
         <div class="d-grid mb-4">
             <button type="submit" class="btn btn-primary">Login</button>
