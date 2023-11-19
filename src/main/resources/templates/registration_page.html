@@ -25,12 +25,12 @@
     <form th:action="@{/register}" th:object="${user}" method="post" enctype="application/x-www-form-urlencoded" autocomplete="on">
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="username" th:field="*{username}">
+            <input type="text" class="form-control" id="username" aria-describedby="emailHelp" name="username" th:field="*{username}" value="{{old('username}}">
             <div class="text-danger" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Name error</div>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email">
+            <input type="email" class="form-control" id="email" aria-describedby="emailHelp" name="email" th:field="*{email}" value="{{old('email}}">
             <div class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email error</div>
         </div>
         <div class="mb-4">
