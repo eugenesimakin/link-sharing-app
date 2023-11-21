@@ -6,10 +6,10 @@ import org.linksharing.server.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AuthController {
@@ -43,8 +43,8 @@ public class AuthController {
         String pass = user.getPassword();
         user.setPassword(passwordEncoder.encode(pass));
 
-        if (userRepository.existsByEmail(user.getEmail())) {  //doesn't work for some reason
-            return "redirect:/login?userExists";
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return "redirect:/login?query=userExists";
         }
 
         userRepository.save(user);
