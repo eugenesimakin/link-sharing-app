@@ -20,6 +20,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(c -> c
                 .requestMatchers(antMatcher("/register"))
                 .permitAll()
+                .requestMatchers(antMatcher("/login"))
+                .permitAll()
                 .requestMatchers(antMatcher("/api/check"))
                 .permitAll()
                 .anyRequest()
