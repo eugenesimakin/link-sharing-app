@@ -22,31 +22,24 @@
 <body>
 <main>
     <h1 class="mb-4 text-center">Links</h1>
-    <form th:action="@{/register}" th:object="${user}" method="post" enctype="application/x-www-form-urlencoded" autocomplete="on">
+    <form th:action="@{/register}" th:object="${user}" method="post" enctype="application/x-www-form-urlencoded" autocomplete="on" novalidate>
         <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" th:unless="${param.hasErrors != null}" id="username" aria-describedby="username" name="username" th:field="*{username}">
-            <input type="text" class="form-control is-invalid" th:if="${param.hasErrors} and ${param.username == null}" id="username" aria-describedby="username" name="username" th:field="*{username}" value="#{param.username}">
-            <input type="text" class="form-control is-valid" th:if="${param.username != null}" id="username" aria-describedby="username" name="username" th:field="*{username}" value="#{param.username}">
-            <div class="invalid-feedback" th:if="${param.hasErrors} and ${param.username == null}">Name error</div>
-            <div class="valid-feedback" th:if="${param.username != null}">Looks good!</div>
+            <label for="username" class="form-label" >Username</label>
+            <input type="text" class="form-control" th:errorclass="is-invalid" th:field="*{username}" id="username" aria-describedby="username">
+            <div class="invalid-feedback" th:errors="*{username}"></div>
+            <div class="valid-feedback">Looks good!</div>
         </div>
         <div class="mb-3">
             <label for="email" class="form-label">Email address</label>
-            <input type="email" class="form-control" th:unless="${param.hasErrors}" id="email" aria-describedby="emailHelp" name="email" th:field="*{email}" value="{{old('email}}">
-            <input type="email" class="form-control is-invalid" th:if="${param.hasErrors} and ${param.email == null}" id="email" aria-describedby="emailHelp" name="email" th:field="*{email}" value="{{old('email}}">
-            <input type="email" class="form-control is-valid" th:if="${param.email != null}" id="email" aria-describedby="emailHelp" name="email" th:field="*{email}" value="{{old('email}}">
-            <div class="invalid-feedback" th:if="${param.hasErrors} and ${param.email == null}">Email error</div>
-            <div class="valid-feedback" th:if="${param.email != null}">Looks good!</div>
-
+            <input type="email" class="form-control" th:errorclass="is-invalid" th:field="*{email}" id="email" aria-describedby="emailHelp" name="email">
+            <div class="invalid-feedback" th:errors="*{email}"></div>
+            <div class="valid-feedback">Looks good!</div>
         </div>
         <div class="mb-4">
             <label for="password" class="form-label" >Password</label>
-            <input type="password" class="form-control" th:unless="${param.hasErrors}" id="password" name="password">
-            <input type="password" class="form-control is-invalid" th:if="${param.passwordIsNotOk}" id="password" name="password">
-            <input type="password" class="form-control is-valid" th:if="${param.passwordIsOk}" id="password" name="password" value="{{old}value}}">
-            <div class="invalid-feedback" th:if="${param.passwordIsNotOk}">Password error</div>
-            <div class="valid-feedback" th:unless="${param.passwordIsOk}">Looks good!</div>
+            <input type="password" class="form-control" th:errorclass="is-invalid" th:field="*{password}" id="password" name="password">
+            <div class="invalid-feedback" th:errors="*{password}"></div>
+            <div class="valid-feedback">Looks good!</div>
         </div>
         <div class="d-grid mb-4">
             <button type="submit" class="btn btn-primary">Register</button>
