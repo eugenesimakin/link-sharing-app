@@ -1,13 +1,15 @@
 package org.linksharing.server.auth;
 
+import jakarta.validation.Valid;
 import org.linksharing.server.user.User;
 import org.linksharing.server.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 @Controller
 public class AuthController {
@@ -27,23 +29,23 @@ public class AuthController {
     }
 
     @GetMapping("/register")
-    public String showRegistrationPage() {
+    public String showRegistrationPage(User user) {
         return "registration_page.html";
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestParam("username") String username,
-                               @RequestParam("email") String email,
-                               @RequestParam("password") String password) {
+    public String registerUser(@Valid User user, BindingResult result) {
 
-        if (userRepository.existsByEmail(email)) {
-            return "redirect:/login?userExists";
+        if (result.hasErrors()) {
+            return "registration_page.html";
         }
 
-        User user = new User();
-        user.setUsername(username);
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(password));
+        String pass = user.getPassword();
+        user.setPassword(passwordEncoder.encode(pass));
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return "redirect:/login?userExists";
+        }
 
         userRepository.save(user);
 
