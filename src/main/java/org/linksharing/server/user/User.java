@@ -4,15 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
-import org.linksharing.server.links.Link;
-import org.linksharing.server.links.LinksJsonConverter;
 
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 
 @Data
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -36,14 +33,9 @@ public class User {
     @Column(name = "deleted_on")
     private Timestamp deletedOn;
 
-    @Column(name = "links")
-    @Convert(converter = LinksJsonConverter.class)
-    private Map<String, Link> links;
-
     @PrePersist
-    public void setTimeAndLinks() {
+    public void prePersist() {
         createdOn = new Timestamp(System.currentTimeMillis());
-        links = new HashMap<>();
     }
 
 }
