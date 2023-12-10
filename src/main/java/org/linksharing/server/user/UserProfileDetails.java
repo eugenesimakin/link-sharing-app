@@ -1,8 +1,6 @@
 package org.linksharing.server.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -10,8 +8,8 @@ import lombok.Data;
 public class UserProfileDetails {
 
     @Id
-    @Column(name = "id", nullable = false, unique = true)
-    private int userId;
+    @Column(name = "profile_id", nullable = false, unique = true)
+    private int profile_id;
 
     @Column(name = "image")
     private String profileImage;
@@ -22,9 +20,14 @@ public class UserProfileDetails {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "additional_email")
+    private String additional_email;
 
     @Column(name = "links")
     private String links;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "email")
+    private User user;
 }
