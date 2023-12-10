@@ -8,7 +8,8 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-@Entity(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
@@ -33,7 +34,7 @@ public class User {
     private Timestamp deletedOn;
 
     @PrePersist
-    public void setTimeAndLinks() {
+    public void prePersist() {
         createdOn = new Timestamp(System.currentTimeMillis());
     }
 
