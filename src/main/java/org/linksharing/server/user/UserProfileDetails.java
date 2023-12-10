@@ -2,17 +2,23 @@ package org.linksharing.server.user;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.linksharing.server.links.Link;
+import org.linksharing.server.links.LinksJsonConverter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
-@Entity(name = "user_profiles")
+@Entity
+@Table(name = "user_profile_details")
 public class UserProfileDetails {
 
     @Id
-    @Column(name = "profile_id", nullable = false, unique = true)
-    private int profile_id;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     @Column(name = "image")
-    private String profileImage;
+    private String imageUrl;
 
     @Column(name = "first_name")
     private String firstName;
@@ -20,14 +26,11 @@ public class UserProfileDetails {
     @Column(name = "last_name")
     private String lastName;
 
-    @Column(name = "additional_email")
-    private String additional_email;
+    @Column(name = "public_email")
+    private String publicEmail;
 
     @Column(name = "links")
-    private String links;
+    @Convert(converter = LinksJsonConverter.class)
+    private Map<String, Link> links = new HashMap<>();
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "email")
-    private User user;
 }
