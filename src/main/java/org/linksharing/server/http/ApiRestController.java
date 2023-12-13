@@ -3,6 +3,7 @@ package org.linksharing.server.http;
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,13 @@ public class ApiRestController {
 
     @GetMapping("/profile")
     ResponseEntity<?> getProfileDetails(Principal user) {
-        return null;
+
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        if (userProfile != null) {
+            return new ResponseEntity<>(userProfile, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/profile")
@@ -55,7 +62,7 @@ public class ApiRestController {
 
         profileRepository.save(userProfile);
 
-        return null;
+        return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 
     @GetMapping("/profile/picture")
