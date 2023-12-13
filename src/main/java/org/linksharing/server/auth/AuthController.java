@@ -2,6 +2,8 @@ package org.linksharing.server.auth;
 
 import jakarta.validation.Valid;
 import org.linksharing.server.user.User;
+import org.linksharing.server.user.UserProfileDetails;
+import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.linksharing.server.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,11 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class AuthController {
 
     private final UserRepository userRepository;
+    private final UserProfileDetailsRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UserRepository userRepository, UserProfileDetailsRepository profileRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.profileRepository = profileRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -47,7 +51,12 @@ public class AuthController {
             return "redirect:/login?userExists";
         }
 
+        UserProfileDetails userProfile = new UserProfileDetails();
+        userProfile.setEmail(user.getEmail());
+        userProfile.setFirstName(user.getUsername());
+
         userRepository.save(user);
+        profileRepository.save(userProfile);
 
         return "redirect:/login";
     }

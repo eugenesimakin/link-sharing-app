@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Links | Profile Details</title>
@@ -70,7 +70,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">E-mail</label>
-                <input type="email" class="form-control" placeholder="" v-model="state.email">
+                <input type="publicEmail" class="form-control" placeholder="" v-model="state.publicEmail">
             </div>
         </div>
         `
@@ -111,14 +111,14 @@
                 savingError: null,
                 firstName: '',
                 lastName: '',
-                email: '',
+                publicEmail: '',
             });
 
             function updateStateFromResponse(resp) {
-                const {firstName, lastName, email} = resp.data;
+                const {firstName, lastName, publicEmail} = resp.data;
                 state.firstName = firstName;
                 state.lastName = lastName;
-                state.email = email;
+                state.publicEmail = publicEmail;
             }
 
             const handleSave = () => {
@@ -129,7 +129,7 @@
                         const resp = await axios.post('/api/profile', {
                             firstName: state.firstName,
                             lastName: state.lastName,
-                            email: state.email,
+                            publicEmail: state.publicEmail,
                         });
                         updateStateFromResponse(resp);
                     } catch (err) {
