@@ -41,18 +41,19 @@ public class ApiRestController {
     }
 
     @GetMapping("/profile")
-    ResponseEntity<?> getProfileDetails(Principal user) {
+    ResponseEntity<UserProfileDetails> getProfileDetails(Principal user) {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
 
         if (userProfile != null) {
             return new ResponseEntity<>(userProfile, HttpStatus.OK);
         }
+      
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/profile")
-    ResponseEntity<?> updateProfileDetails(Principal user, @RequestBody UserProfileDetails profileDetails) {
+    ResponseEntity<UserProfileDetails> updateProfileDetails(Principal user, @RequestBody UserProfileDetails profileDetails) {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
 
