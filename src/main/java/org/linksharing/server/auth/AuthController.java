@@ -48,7 +48,9 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(pass));
 
         if (userRepository.existsByEmail(user.getEmail())) {
-            return "redirect:/login?userExists";
+            return "redirect:/login?emailExists";
+        } else if (userRepository.existsByUsername(user.getUsername())) {
+            return "redirect:/login?usernameExists";
         }
 
         UserProfileDetails userProfile = new UserProfileDetails();

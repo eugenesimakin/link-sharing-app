@@ -22,10 +22,9 @@
 <body>
 <main>
     <div class="mb-4 text-center">
-        <div class="text-success" th:if="${param.logout}">You have been logged out.</div>
-    </div>
-    <div class="mb-4 text-center">
-        <div class="text-warning" th:if="${param.userExists}">This email already in use. Please login.</div>
+        <div class="text-success" th:if="${param.logout}">You have been LOGGED OUT.</div>
+        <div class="text-warning" th:if="${param.emailExists}">This EMAIL already in use. Please login.</div>
+        <div class="text-warning" th:if="${param.usernameExists}">This USERNAME already in use. Please login.</div>
     </div>
     <h1 class="mb-4 text-center">Links</h1>
     <form th:action="@{/login}" method="post" autocomplete="on">
