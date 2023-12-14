@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.Principal;
-import java.util.Optional;
 
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 
@@ -68,7 +67,14 @@ public class ApiRestController {
 
     @GetMapping("/profile/picture")
     ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
-        File img = new File("../image.jpg");
+
+        String imageUrl = "../image.jpg";
+
+        if (profileRepository.findByEmail(user.getName()).getImageUrl() != null) {
+            imageUrl = profileRepository.findByEmail(user.getName()).getImageUrl();
+        }
+
+        File img = new File(imageUrl);
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
