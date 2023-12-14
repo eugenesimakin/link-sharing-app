@@ -1,11 +1,11 @@
 package org.linksharing.server.http;
 
+import org.linksharing.server.user.UserProfileDetails;
+import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,6 +17,12 @@ import static org.springframework.http.MediaType.IMAGE_JPEG;
 @RestController
 @RequestMapping("/api")
 public class ApiRestController {
+
+    private final UserProfileDetailsRepository profileRepository;
+
+    public ApiRestController(UserProfileDetailsRepository profileRepository) {
+        this.profileRepository = profileRepository;
+    }
 
     @GetMapping("/check")
     ResponseEntity<?> healthCheck() {
@@ -34,13 +40,29 @@ public class ApiRestController {
     }
 
     @GetMapping("/profile")
-    ResponseEntity<?> getProfileDetails(Principal user) {
-        return null;
+    ResponseEntity<UserProfileDetails> getProfileDetails(Principal user) {
+
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        if (userProfile != null) {
+            return new ResponseEntity<>(userProfile, HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/profile")
-    ResponseEntity<?> updateProfileDetails(Principal user) {
-        return null;
+    ResponseEntity<UserProfileDetails> updateProfileDetails(Principal user, @RequestBody UserProfileDetails profileDetails) {
+
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        userProfile.setFirstName(profileDetails.getFirstName());
+        userProfile.setLastName(profileDetails.getLastName());
+        userProfile.setPublicEmail(profileDetails.getPublicEmail());
+
+        profileRepository.save(userProfile);
+
+        return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 
     @GetMapping("/profile/picture")
