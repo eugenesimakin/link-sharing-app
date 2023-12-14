@@ -53,7 +53,6 @@ public class AuthController {
 
         UserProfileDetails userProfile = new UserProfileDetails();
         userProfile.setEmail(user.getEmail());
-        userProfile.setFirstName(user.getUsername());
 
         userRepository.save(user);
         profileRepository.save(userProfile);
