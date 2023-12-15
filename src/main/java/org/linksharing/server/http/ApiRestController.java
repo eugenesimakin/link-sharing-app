@@ -1,5 +1,6 @@
 package org.linksharing.server.http;
 
+import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,12 @@ import static org.springframework.http.MediaType.IMAGE_JPEG;
 @RestController
 @RequestMapping("/api")
 public class ApiRestController {
+
+    private final UserProfileDetailsRepository profileRepository;
+
+    public ApiRestController(UserProfileDetailsRepository profileRepository) {
+        this.profileRepository = profileRepository;
+    }
 
     @GetMapping("/check")
     ResponseEntity<?> healthCheck() {
@@ -45,7 +52,16 @@ public class ApiRestController {
 
     @GetMapping("/profile/picture")
     ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
-        File img = new File("../image.jpg");
+
+        String imageUrl;
+
+        try {
+            imageUrl = profileRepository.findByEmail(user.getName()).getImageUrl();
+        } catch (NullPointerException e) {
+            imageUrl = "../image.jpg";
+        }
+
+        File img = new File(imageUrl);
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
