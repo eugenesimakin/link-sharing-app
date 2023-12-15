@@ -68,13 +68,7 @@ public class ApiRestController {
     @GetMapping("/profile/picture")
     ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
 
-        String imageUrl = "../image.jpg";
-
-        if (profileRepository.findByEmail(user.getName()).getImageUrl() != null) {
-            imageUrl = profileRepository.findByEmail(user.getName()).getImageUrl();
-        }
-
-        File img = new File(imageUrl);
+        File img = new File("../image.jpg");
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
