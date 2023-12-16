@@ -41,7 +41,9 @@ public class AuthController {
     @PostMapping("/register")
     public String registerUser(@Valid User user, BindingResult result) {
 
-        if (userRepository.existsByUsername(user.getUsername())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return "redirect:/login?emailExists";
+        } else if (userRepository.existsByUsername(user.getUsername())) {
             result.addError(new FieldError(result.getObjectName(),"username", "Username already in use."));
         }
 
@@ -51,12 +53,6 @@ public class AuthController {
 
         String pass = user.getPassword();
         user.setPassword(passwordEncoder.encode(pass));
-
-        if (userRepository.existsByEmail(user.getEmail())) {
-            return "redirect:/login?emailExists";
-        } else if (userRepository.existsByUsername(user.getUsername())) {
-            return "redirect:/login?usernameExists";
-        }
 
         UserProfileDetails userProfile = new UserProfileDetails();
         userProfile.setEmail(user.getEmail());
