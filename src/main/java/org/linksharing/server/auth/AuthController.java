@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -40,16 +41,18 @@ public class AuthController {
     @PostMapping("/register")
     public String registerUser(@Valid User user, BindingResult result) {
 
+        if (userRepository.existsByEmail(user.getEmail())) {
+            return "redirect:/login?emailExists";
+        } else if (userRepository.existsByUsername(user.getUsername())) {
+            result.addError(new FieldError(result.getObjectName(),"username", "Username already in use."));
+        }
+
         if (result.hasErrors()) {
             return "registration_page.html";
         }
 
         String pass = user.getPassword();
         user.setPassword(passwordEncoder.encode(pass));
-
-        if (userRepository.existsByEmail(user.getEmail())) {
-            return "redirect:/login?userExists";
-        }
 
         UserProfileDetails userProfile = new UserProfileDetails();
         userProfile.setEmail(user.getEmail());

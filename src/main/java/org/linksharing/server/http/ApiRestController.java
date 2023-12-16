@@ -47,7 +47,7 @@ public class ApiRestController {
         if (userProfile != null) {
             return new ResponseEntity<>(userProfile, HttpStatus.OK);
         }
-
+      
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
