@@ -47,7 +47,7 @@ public class ApiRestController {
         if (userProfile != null) {
             return new ResponseEntity<>(userProfile, HttpStatus.OK);
         }
-
+      
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
@@ -67,6 +67,7 @@ public class ApiRestController {
 
     @GetMapping("/profile/picture")
     ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
+
         File img = new File("../image.jpg");
         return ResponseEntity
                 .ok()
