@@ -22,7 +22,9 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AuthController(UserRepository userRepository, UserProfileDetailsRepository profileRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(UserRepository userRepository,
+                          UserProfileDetailsRepository profileRepository,
+                          PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.passwordEncoder = passwordEncoder;
@@ -44,7 +46,9 @@ public class AuthController {
         if (userRepository.existsByEmail(user.getEmail())) {
             return "redirect:/login?emailExists";
         } else if (userRepository.existsByUsername(user.getUsername())) {
-            result.addError(new FieldError(result.getObjectName(),"username", "Username already in use."));
+            result.addError(
+                    new FieldError(result.getObjectName(), "username", "Username already in use.")
+            );
         }
 
         if (result.hasErrors()) {

@@ -11,14 +11,14 @@ import java.util.Map;
 @Converter(autoApply = true)
 public class LinksJsonConverter implements AttributeConverter<Map<String, Link>, String> {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final TypeReference<Map<String, Link>> typeRef = new TypeReference<>() {
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final TypeReference<Map<String, Link>> TYPE_REF = new TypeReference<>() {
     };
 
     @Override
     public String convertToDatabaseColumn(Map<String, Link> links) {
         try {
-            return mapper.writeValueAsString(links);
+            return MAPPER.writeValueAsString(links);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
@@ -27,7 +27,7 @@ public class LinksJsonConverter implements AttributeConverter<Map<String, Link>,
     @Override
     public Map<String, Link> convertToEntityAttribute(String dbData) {
         try {
-            return mapper.readValue(dbData, typeRef);
+            return MAPPER.readValue(dbData, TYPE_REF);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
