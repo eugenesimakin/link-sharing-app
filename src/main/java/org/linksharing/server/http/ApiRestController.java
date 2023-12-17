@@ -2,6 +2,7 @@ package org.linksharing.server.http;
 
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.Principal;
 
 import static org.springframework.http.MediaType.IMAGE_JPEG;
@@ -66,7 +68,7 @@ public class ApiRestController {
     }
 
     @GetMapping("/profile/picture")
-    ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
+    ResponseEntity<?> getProfilePicture(Principal user) throws IOException {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
         String imageUrl;
@@ -74,7 +76,7 @@ public class ApiRestController {
         if (userProfile.getImageUrl() != null) {
             imageUrl = userProfile.getImageUrl();
         } else  {
-            imageUrl = "../image.jpg";
+            imageUrl = "src/main/resources/static/placeholder.jpg";
         }
 
         File img = new File(imageUrl);
