@@ -16,7 +16,8 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     @NotEmpty(message = "Email can't be empty")
     @Email(regexp = ".+[@].+[\\.].+",
-            message = "Invalid email format. It should have both @ character and .domain\nExample: yourName@emailProvider.domain")
+            message = "Invalid email format. It should have both @ character and domain.\n"
+                    + "Example: yourName@emailProvider.domain")
     private String email;
 
     @Column(name = "username", nullable = false, unique = true)
