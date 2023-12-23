@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Links | Profile Details</title>
@@ -57,8 +58,9 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Profile Picture</label>
-                <input class="form-control" type="file">
+                <input class="form-control" type="file" id="file" v-on:change="handleFileUpload($event)">
                 <p class="form-text">Image must be below 1024x1024px. Use PNG or JPG format.</p>
+                <button class="btn btn-primary flex-grow-1" v-on:click="submitFile()">Upload file</button>
             </div>
             <div class="mb-3">
                 <label class="form-label">First Name</label>
@@ -75,7 +77,7 @@
         </div>
         `
         <div v-if="!state.loading && !state.loadingError" class="col-fixed d-flex flex-row gap-3 mb-3">
-            <button @click="handleSave" :disabled="state.saving" class="btn btn-primary flex-grow-1">
+            <button @click="handleSave" disabled="state.saving" class="btn btn-primary flex-grow-1">
                 <span v-if="state.saving" class="spinner-border spinner-border-sm" role="status"
                       aria-hidden="true"></span>
                 {{ state.saving ? 'Saving...' : 'Save' }}
@@ -101,7 +103,6 @@
 <script type="module">
     import {createApp, onMounted, reactive} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
-
     const app = createApp({
         setup() {
             const state = reactive({
@@ -112,7 +113,43 @@
                 firstName: '',
                 lastName: '',
                 publicEmail: '',
+                file: null,
             });
+
+            function updateStateFromResponse(resp) {
+                const { firstName, lastName, publicEmail } = resp.data;
+                state.firstName = firstName;
+                state.lastName = lastName;
+                state.publicEmail = publicEmail;
+            }
+
+            const handleFileUpload = (event) => {
+                state.file = event.target.files[0];
+                console.log('file uploaded');
+
+                const reader = new FileReader();
+                reader.readAsDataURL(state.file);
+            };
+
+            const submitFile = async () => {
+                try {
+                    state.savingError = null;
+                    state.saving = true;
+
+                    const formData = new FormData();
+                    formData.append('file', state.file);
+
+                    const resp = await axios.post('/api/profile/picture', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+                } catch (err) {
+                    state.savingError = err.message;
+                } finally {
+                    state.saving = false;
+                }
+            };
 
             function updateStateFromResponse(resp) {
                 const {firstName, lastName, publicEmail} = resp.data;
@@ -156,6 +193,8 @@
             return {
                 state,
                 handleSave,
+                handleFileUpload,
+                submitFile,
             };
         },
         template: `#mainTemplate`
@@ -163,6 +202,5 @@
 
     app.mount("#main");
 </script>
-
 </body>
 </html>
