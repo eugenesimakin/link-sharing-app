@@ -2,7 +2,6 @@ package org.linksharing.server.http;
 
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -91,30 +89,21 @@ public class ApiRestController {
     }
 
     @PostMapping("/profile/picture")
-    ResponseEntity<?> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
-
-        System.out.println("Update picture");
+    String updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
 
+        String[] fileNameParts = file.getOriginalFilename().split(".");
+        String fileExtension = fileNameParts[fileNameParts.length - 1];
 
-        Path newFileName = Paths.get("src/main/resources/upload/",
-                userProfile.getEmail() + file.getOriginalFilename().
-                        substring(file.getOriginalFilename().length() - 4));
+        Path newFileName = Paths.get("src/main/resources/upload/", userProfile.getEmail() + fileExtension);
         Files.write(newFileName, file.getBytes());
-
-        System.out.println(newFileName);
 
         userProfile.setImageUrl(String.valueOf(newFileName));
         profileRepository.save(userProfile);
 
-        System.out.println(userProfile.getImageUrl());
-
         File img = new File(newFileName.toString());
-        return ResponseEntity
-                .ok()
-                .contentType(IMAGE_JPEG)
-                .body(new InputStreamResource(new FileInputStream(img)));
+        return "/api/profile";
     }
 
 }
