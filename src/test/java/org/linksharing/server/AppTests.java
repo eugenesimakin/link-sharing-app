@@ -20,9 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AppTests {
 
-    static SeleniumConfig sConfig;
+    private static final long DEFAULT_SLEEP_TIMEOUT = 500;
+
+    private static SeleniumConfig sConfig;
+
     @LocalServerPort
-    int port;
+    private int port;
 
     @BeforeAll
     public static void beforeAll() {
@@ -45,7 +48,8 @@ class AppTests {
                 .withPassword("123")
                 .submit();
 
-        Thread.sleep(500); // TODO: test is unstable unless
+        // TODO: test is unstable unless...
+        Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
 
         driver.get(getUrl(port) + "/login");
         new LoginPage(driver)
@@ -66,15 +70,15 @@ class AppTests {
 
         // without scrolling - error on save btn click
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
-        Thread.sleep(500);
+        Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
 
         profileDetailsPage.clickSave();
 
-        Thread.sleep(500);
+        Thread.sleep(DEFAULT_SLEEP_TIMEOUT);
         driver.navigate().refresh();
 
         profileDetailsPage.verifyFirstName("John");
-        profileDetailsPage.withLastName("Doe");
+        profileDetailsPage.verifyLastName("Doe");
         profileDetailsPage.verifyEmail("johndoe@mail.com");
     }
 
