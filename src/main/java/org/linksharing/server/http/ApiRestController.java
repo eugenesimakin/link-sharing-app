@@ -90,7 +90,6 @@ public class ApiRestController {
 
     @PostMapping("/profile/picture")
     ResponseEntity<UserProfileDetails> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
-
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
 
         String[] fileNameParts = file.getOriginalFilename().split("\\.");
