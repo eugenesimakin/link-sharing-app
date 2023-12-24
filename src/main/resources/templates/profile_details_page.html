@@ -125,7 +125,6 @@
 
             const handleFileUpload = (event) => {
                 state.file = event.target.files[0];
-                console.log('file uploaded');
 
                 const reader = new FileReader();
                 reader.readAsDataURL(state.file);

@@ -89,24 +89,21 @@ public class ApiRestController {
     }
 
     @PostMapping("/profile/picture")
-    ResponseEntity<?> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
+    ResponseEntity<UserProfileDetails> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
 
-        String[] fileParts = file.getOriginalFilename().split("\\.");
-        String fileExtension = "." + fileParts[fileParts.length - 1];
+        String[] fileNameParts = file.getOriginalFilename().split("\\.");
+        String fileExtension = "." + fileNameParts[fileNameParts.length - 1];
 
-        Path newFileName = Paths.get("src/main/resources/upload/",userProfile.getEmail() + fileExtension);
+        Path newFileName = Paths.get("src/main/resources/upload/", userProfile.getEmail() + fileExtension);
         Files.write(newFileName, file.getBytes());
 
         userProfile.setImageUrl(String.valueOf(newFileName));
         profileRepository.save(userProfile);
 
         File img = new File(newFileName.toString());
-        return ResponseEntity
-                .ok()
-                .contentType(IMAGE_JPEG)
-                .body(new InputStreamResource(new FileInputStream(img)));
+        return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 
 }
