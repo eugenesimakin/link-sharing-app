@@ -3,6 +3,7 @@ package org.linksharing.server;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.linksharing.server.pages.LoginPage;
 import org.linksharing.server.pages.ProfileDetailsPage;
 import org.linksharing.server.pages.RegistrationPage;
@@ -12,11 +13,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AppTests {
 
