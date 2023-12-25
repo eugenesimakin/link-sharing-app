@@ -57,22 +57,23 @@
         <div v-if="!state.loading && !state.loadingError" v-for="(link, index) in state.links" :key="link.id"
              class="col-fixed mb-5">
             <h3 class="mb-3">Link #{{ index + 1 }}</h3>
-            <button @click="() => state.removeLink(link.id)" class="btn btn-link remove-btn">Remove</button>
+            <button @click="() => state.removeLink(link)" class="btn btn-link remove-btn">Remove</button>
             <div class="mb-3">
                 <label class="form-label">Title</label>
-                <input type="text" class="form-control" placeholder="e.g. Github" v-model="link.title">
+                <input type="text" class="form-control" name="linkTitle" placeholder="e.g. Github" v-model="link.title">
             </div>
             <div class="mb-3">
                 <label class="form-label">Link</label>
-                <input type="url" class="form-control" placeholder="https://github.com" v-model="link.url">
+                <input type="url" class="form-control" name="linkUrl" placeholder="https://github.com" v-model="link.url">
             </div>
         </div>
         `
         <div v-if="!state.loading && !state.loadingError" class="col-fixed d-flex flex-row gap-3 mb-3">
-            <button @click="state.addEmptyLink" :disabled="state.saving" class="btn btn-outline-secondary flex-fill">
+            <button @click="state.addEmptyLink" :disabled="state.saving" name="addLink" class="btn btn-outline-secondary flex-fill">
                 Add New Link
             </button>
             <button @click="handleSave" v-if="state.links.length > 0" :disabled="state.saving"
+                    name="saveLinks"
                     class="btn btn-primary flex-grow-1">
                 <span v-if="state.saving" class="spinner-border spinner-border-sm" role="status"
                       aria-hidden="true"></span>
@@ -111,8 +112,8 @@
                 addEmptyLink() {
                     state.links.push({id: -1, title: '', url: ''});
                 },
-                removeLink(id) {
-                    state.links = state.links.filter(link => link.id !== id);
+                removeLink(link) {
+                    state.links = state.links.filter(l => l.url !== link.url);
                 },
             });
 

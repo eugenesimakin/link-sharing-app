@@ -1,5 +1,6 @@
 package org.linksharing.server.http;
 
+import org.linksharing.server.links.Link;
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.springframework.core.io.InputStreamResource;
@@ -11,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.security.Principal;
+import java.util.List;
 
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 
@@ -30,12 +32,12 @@ public class ApiRestController {
     }
 
     @GetMapping("/links")
-    ResponseEntity<?> getLinks(Principal user) {
+    ResponseEntity<List<Link>> getLinks(Principal user) {
         return null;
     }
 
     @PostMapping("/links")
-    ResponseEntity<?> updateLinks(Principal user) {
+    ResponseEntity<List<Link>> updateLinks(Principal user, @RequestBody List<Link> links) {
         return null;
     }
 
