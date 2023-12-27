@@ -101,7 +101,6 @@ public class ApiRestController {
         userProfile.setImageUrl(String.valueOf(newFileName));
         profileRepository.save(userProfile);
 
-        File img = new File(newFileName.toString());
         return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 

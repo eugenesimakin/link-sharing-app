@@ -55,5 +55,6 @@ gradle-app.setting
 *.hprof
 
 .idea/
+upload/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle
