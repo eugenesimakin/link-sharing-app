@@ -20,4 +20,9 @@ public class UserAccountController {
         return "profile_details_page.html";
     }
 
+    @GetMapping("/public")
+    public String userPublicPage() {
+        return "user's_public_page.html";
+    }
+
 }
