@@ -71,7 +71,7 @@ public class ApiRestController {
     @GetMapping("/profile/picture")
     ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
 
-        File img = new File("../image.jpg");
+        File img = new File("src/main/resources/static/placeholder.jpg");
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
