@@ -50,96 +50,23 @@
     </style>
 </head>
 <body>
-
-<main id="main" class="bg-light-subtle py-5"></main>
-
-<script type="text/x-template" id="mainTemplate">
-    <div class="container">
-        <div th:if="${notFound != null}" class="alert alert-warning" role="alert">
-            <h4 class="alert-heading">404</h4>
-            <p>
-                Look like there is no data associated with this user.
-                Please, contact the person who shared this with you.
-            </p>
-        </div>
-        <div v-if="!state.loading && !state.loadingError" class="col-fixed mb-5">
-            <img class="profile-picture" src="/api/profile/picture" alt="Profile Picture">
-            <h1 class="profile-fullname" th:text="${'userProfile.firstName' + ' ' + 'userProfile.lastName'}"></h1>
-            <p class="public-email" v-show="state.publicEmail"></p>
-<!--            <div class="links">-->
-<!--                <th:block th:each="link : ${userProfile.links}">-->
-<!--                    <a class="btn btn-outline-dark btn-lg" th:href="${link.url}" th:text="${link.title}"></a>-->
-<!--                </th:block>-->
-<!--            </div>-->
-        </div>
+<div class="container">
+    <div th:if="${notFound != null}" class="alert alert-warning" role="alert">
+        <h4 class="alert-heading">404</h4>
+        <p>
+            Look like there is no data associated with this user.
+            Please, contact the person who shared this with you.
+        </p>
     </div>
-</script>
-
-<script type="module">
-    import {createApp, onMounted, reactive} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
-
-
-    const app = createApp({
-        setup() {
-            const state = reactive({
-                loading: true,
-                loadingError: null,
-                saving: false,
-                savingError: null,
-                firstName: '',
-                lastName: '',
-                publicEmail: '',
-            });
-
-            function updateStateFromResponse(resp) {
-                const {firstName, lastName, publicEmail} = resp.data;
-                state.firstName = firstName;
-                state.lastName = lastName;
-                state.publicEmail = publicEmail;
-            }
-
-            const handleSave = () => {
-                (async () => {
-                    state.savingError = null;
-                    state.saving = true;
-                    try {
-                        const resp = await axios.post('/api/profile', {
-                            firstName: state.firstName,
-                            lastName: state.lastName,
-                            publicEmail: state.publicEmail,
-                        });
-                        updateStateFromResponse(resp);
-                    } catch (err) {
-                        state.savingError = err.message;
-                    } finally {
-                        state.saving = false;
-                    }
-                })();
-            };
-
-            onMounted(() => {
-                (async () => {
-                    try {
-                        const resp = await axios.get('/api/profile');
-                        updateStateFromResponse(resp);
-                    } catch (err) {
-                        state.loadingError = err.message;
-                    } finally {
-                        state.loading = false;
-                    }
-                })();
-            });
-
-            return {
-                state,
-                handleSave,
-            };
-        },
-        template: `#mainTemplate`
-    });
-
-    app.mount("#main");
-</script>
+    <img class="profile-picture" th:src="@{'/pics/' + ${details.imageUrl}}" alt="Profile picture">
+    <h1 class="profile-fullname" th:text="${details.firstName + ' ' + details.lastName}"></h1>
+    <p class="public-email" th:text="${details.publicEmail}"></p>
+<!--    <div class="links">-->
+<!--        <th:block th:each="link : ${details.links}">-->
+<!--            <a class="btn btn-outline-dark btn-lg" th:href="${link.url}" th:text="${link.title}"></a>-->
+<!--        </th:block>-->
+<!--    </div>-->
+</div>
 
 </body>
 </html>
