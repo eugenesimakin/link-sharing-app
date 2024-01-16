@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml"
-      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Links | Profile Details</title>
@@ -75,7 +74,7 @@
                 <input type="email" name="email" class="form-control" placeholder="" v-model="state.publicEmail">
             </div>
         </div>
-        `
+
         <div v-if="!state.loading && !state.loadingError" class="col-fixed d-flex flex-row gap-3 mb-3">
             <button @click="handleSave" disabled="state.saving" class="btn btn-primary flex-grow-1">
                 <span v-if="state.saving" class="spinner-border spinner-border-sm" role="status"

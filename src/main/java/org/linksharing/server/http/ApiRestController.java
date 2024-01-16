@@ -80,15 +80,15 @@ public class ApiRestController {
 
         if (userProfile.getImageUrl() != null) {
             imageUrl = userProfile.getImageUrl();
-        } else  {
+        } else {
             imageUrl = "src/main/resources/static/placeholder.jpg";
         }
 
-        File img = new File(imageUrl);
+        File profilePicture = new File(imageUrl);
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
-                .body(new InputStreamResource(new FileInputStream(img)));
+                .body(new InputStreamResource(new FileInputStream(profilePicture)));
     }
 
     @PostMapping("/profile/picture")
@@ -98,7 +98,7 @@ public class ApiRestController {
         String[] fileNameParts = file.getOriginalFilename().split("\\.");
         String fileExtension = "." + fileNameParts[fileNameParts.length - 1];
 
-        Path newFileName = Paths.get("src/main/resources/upload/", userProfile.getEmail() + fileExtension);
+        Path newFileName = Paths.get("D:\\Java_Projects\\link-sharing-app\\pics", userProfile.getEmail() + fileExtension);
         Files.write(newFileName, file.getBytes());
 
         userProfile.setImageUrl(String.valueOf(newFileName));
