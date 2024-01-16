@@ -7,10 +7,14 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
 
@@ -69,18 +73,38 @@ public class ApiRestController {
     }
 
     @GetMapping("/profile/picture")
-    ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
+    ResponseEntity<?> getProfilePicture(Principal user) throws IOException {
 
-        File img = new File("../image.jpg");
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+        String imageUrl;
+
+        if (userProfile.getImageUrl() != null) {
+            imageUrl = userProfile.getImageUrl();
+        } else {
+            imageUrl = "src/main/resources/static/placeholder.jpg";
+        }
+
+        File profilePicture = new File(imageUrl);
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
-                .body(new InputStreamResource(new FileInputStream(img)));
+                .body(new InputStreamResource(new FileInputStream(profilePicture)));
     }
 
     @PostMapping("/profile/picture")
-    ResponseEntity<?> updateProfilePicture(Principal user) {
-        return null;
+    ResponseEntity<UserProfileDetails> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        String[] fileNameParts = file.getOriginalFilename().split("\\.");
+        String fileExtension = "." + fileNameParts[fileNameParts.length - 1];
+
+        Path newFileName = Paths.get("D:\\Java_Projects\\link-sharing-app\\pics", userProfile.getEmail() + fileExtension);
+        Files.write(newFileName, file.getBytes());
+
+        userProfile.setImageUrl(String.valueOf(newFileName));
+        profileRepository.save(userProfile);
+
+        return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 
 }
