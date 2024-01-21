@@ -59,7 +59,7 @@
                 <label class="form-label">Profile Picture</label>
                 <input class="form-control" type="file" id="file" v-on:change="handleFileUpload($event)">
                 <p class="form-text">Image must be below 1024x1024px. Use PNG or JPG format.</p>
-                <button class="btn btn-primary flex-grow-1" v-on:click="submitFile()">Upload file</button>
+                <button class="btn btn-secondary flex-grow-1" v-on:click="submitFile()">Upload file</button>
             </div>
             <div class="mb-3">
                 <label class="form-label">First Name</label>
@@ -76,7 +76,7 @@
         </div>
 
         <div v-if="!state.loading && !state.loadingError" class="col-fixed d-flex flex-row gap-3 mb-3">
-            <button @click="handleSave" disabled="state.saving" class="btn btn-primary flex-grow-1">
+            <button @click="handleSave" :disabled="state.saving" class="btn btn-primary flex-grow-1">
                 <span v-if="state.saving" class="spinner-border spinner-border-sm" role="status"
                       aria-hidden="true"></span>
                 {{ state.saving ? 'Saving...' : 'Save' }}
@@ -148,13 +148,6 @@
                     state.saving = false;
                 }
             };
-
-            function updateStateFromResponse(resp) {
-                const {firstName, lastName, publicEmail} = resp.data;
-                state.firstName = firstName;
-                state.lastName = lastName;
-                state.publicEmail = publicEmail;
-            }
 
             const handleSave = () => {
                 (async () => {
