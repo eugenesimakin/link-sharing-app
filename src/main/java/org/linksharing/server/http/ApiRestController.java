@@ -4,7 +4,8 @@ import org.linksharing.server.links.Link;
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ResourceUtils;
@@ -13,8 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,25 +75,21 @@ public class ApiRestController {
     }
 
     @GetMapping("/profile/picture")
-    ResponseEntity<InputStreamResource> getProfilePicture(Principal user) throws IOException, URISyntaxException {
+    ResponseEntity<Resource> getProfilePicture(Principal user) {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
-        String imageUrl;
+        Resource imgResource;
 
         if (userProfile.getImageUrl() != null) {
-            imageUrl = userProfile.getImageUrl();
-            System.out.println(imageUrl);
+            imgResource = new PathResource(userProfile.getImageUrl());
         } else {
-            imageUrl = "static/placeholder.jpg";
+            imgResource = new ClassPathResource("static/placeholder.jpg");
         }
 
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(imageUrl);
-        assert inputStream != null;
-        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
-                .body(inputStreamResource);
+                .body(imgResource);
     }
 
     @PostMapping("/profile/picture")
