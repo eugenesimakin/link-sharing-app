@@ -3,15 +3,18 @@ package org.linksharing.server.http;
 import org.linksharing.server.links.Link;
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -73,22 +76,25 @@ public class ApiRestController {
     }
 
     @GetMapping("/profile/picture")
-    ResponseEntity<?> getProfilePicture(Principal user) throws IOException {
+    ResponseEntity<InputStreamResource> getProfilePicture(Principal user) throws IOException, URISyntaxException {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
         String imageUrl;
 
         if (userProfile.getImageUrl() != null) {
             imageUrl = userProfile.getImageUrl();
+            System.out.println(imageUrl);
         } else {
-            imageUrl = "src/main/resources/static/placeholder.jpg";
+            imageUrl = "static/placeholder.jpg";
         }
 
-        File profilePicture = new File(imageUrl);
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(imageUrl);
+        assert inputStream != null;
+        InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
-                .body(new InputStreamResource(new FileInputStream(profilePicture)));
+                .body(inputStreamResource);
     }
 
     @PostMapping("/profile/picture")
@@ -98,7 +104,14 @@ public class ApiRestController {
         String[] fileNameParts = file.getOriginalFilename().split("\\.");
         String fileExtension = "." + fileNameParts[fileNameParts.length - 1];
 
-        Path newFileName = Paths.get("D:\\Java_Projects\\link-sharing-app\\pics", userProfile.getEmail() + fileExtension);
+        String rootPath = ResourceUtils.getFile("").getAbsolutePath();
+        File picsFolder = new File(rootPath + File.separator + "pics");
+
+        if (!picsFolder.exists()) {
+            picsFolder.mkdir();
+        }
+
+        Path newFileName = Paths.get(picsFolder.getPath(), userProfile.getEmail() + fileExtension);
         Files.write(newFileName, file.getBytes());
 
         userProfile.setImageUrl(String.valueOf(newFileName));
