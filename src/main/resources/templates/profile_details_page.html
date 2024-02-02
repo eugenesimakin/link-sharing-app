@@ -32,6 +32,17 @@
             display: block;
             margin: 0 auto;
         }
+
+        div:has(> .spinner-container) {
+            position: relative;
+        }
+
+        .spinner-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
     </style>
 </head>
 <body>
@@ -54,12 +65,16 @@
         <div v-if="!state.loading && !state.loadingError" class="col-fixed mb-5">
             <div class="mb-3">
                 <img class="profile-picture" src="/api/profile/picture" alt="Profile Picture">
+                <div v-if="state.uploadingImage" class="spinner-container">
+                    <div class="spinner-grow" style="width: 3rem; height: 3rem;"  role="status">
+                        <span class="sr-only">Uploading profile picture...</span>
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Profile Picture</label>
-                <input class="form-control" type="file" id="file" v-on:change="handleFileUpload($event)">
+                <input class="form-control" type="file" @change="handleFileUpload" :disabled="state.uploadingImage">
                 <p class="form-text">Image must be below 1024x1024px. Use PNG or JPG format.</p>
-                <button class="btn btn-secondary flex-grow-1" v-on:click="submitFile()">Upload file</button>
             </div>
             <div class="mb-3">
                 <label class="form-label">First Name</label>
@@ -109,10 +124,10 @@
                 loadingError: null,
                 saving: false,
                 savingError: null,
+                uploadingImage: false,
                 firstName: '',
                 lastName: '',
                 publicEmail: '',
-                file: null,
             });
 
             function updateStateFromResponse(resp) {
@@ -121,33 +136,6 @@
                 state.lastName = lastName;
                 state.publicEmail = publicEmail;
             }
-
-            const handleFileUpload = (event) => {
-                state.file = event.target.files[0];
-
-                const reader = new FileReader();
-                reader.readAsDataURL(state.file);
-            };
-
-            const submitFile = async () => {
-                try {
-                    state.savingError = null;
-                    state.saving = true;
-
-                    const formData = new FormData();
-                    formData.append('file', state.file);
-
-                    const resp = await axios.post('/api/profile/picture', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    });
-                } catch (err) {
-                    state.savingError = err.message;
-                } finally {
-                    state.saving = false;
-                }
-            };
 
             const handleSave = () => {
                 (async () => {
@@ -181,11 +169,34 @@
                 })();
             });
 
+            const handleFileUpload = (e) => {
+                (async () => {
+                    try {
+                        state.uploadingImage = true;
+                        const file = e.target.files[0];
+                        const data = new FormData();
+                        data.set("file", file);
+                        await axios.post('/api/profile/picture', data, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            }
+                        });
+                        const imgEl = document.querySelector('img.profile-picture');
+                        if (imgEl !== null) {
+                            imgEl.setAttribute('src', `/api/profile/picture?ts=${Date.now()}`)
+                        }
+                    } catch (err) {
+                        state.savingError = err.message;
+                    } finally {
+                        state.uploadingImage = false;
+                    }
+                })();
+            };
+
             return {
                 state,
                 handleSave,
                 handleFileUpload,
-                submitFile,
             };
         },
         template: `#mainTemplate`
