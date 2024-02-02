@@ -3,14 +3,20 @@ package org.linksharing.server.http;
 import org.linksharing.server.links.Link;
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
-import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
 
@@ -69,18 +75,44 @@ public class ApiRestController {
     }
 
     @GetMapping("/profile/picture")
-    ResponseEntity<?> getProfilePicture(Principal user) throws FileNotFoundException {
+    ResponseEntity<Resource> getProfilePicture(Principal user) {
 
-        File img = new File("../image.jpg");
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+        Resource imgResource;
+
+        if (userProfile.getImageUrl() != null) {
+            imgResource = new PathResource(userProfile.getImageUrl());
+        } else {
+            imgResource = new ClassPathResource("static/placeholder.jpg");
+        }
+
         return ResponseEntity
                 .ok()
                 .contentType(IMAGE_JPEG)
-                .body(new InputStreamResource(new FileInputStream(img)));
+                .body(imgResource);
     }
 
     @PostMapping("/profile/picture")
-    ResponseEntity<?> updateProfilePicture(Principal user) {
-        return null;
+    ResponseEntity<UserProfileDetails> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        String[] fileNameParts = file.getOriginalFilename().split("\\.");
+        String fileExtension = "." + fileNameParts[fileNameParts.length - 1];
+
+        String rootPath = ResourceUtils.getFile("").getAbsolutePath();
+        File picsFolder = new File(rootPath + File.separator + "pics");
+
+        if (!picsFolder.exists()) {
+            picsFolder.mkdir();
+        }
+
+        Path newFileName = Paths.get(picsFolder.getPath(), userProfile.getEmail() + fileExtension);
+        Files.write(newFileName, file.getBytes());
+
+        userProfile.setImageUrl(String.valueOf(newFileName));
+        profileRepository.save(userProfile);
+
+        return new ResponseEntity<>(userProfile, HttpStatus.OK);
     }
 
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:v-on="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Links | Profile Details</title>
@@ -32,6 +32,17 @@
             display: block;
             margin: 0 auto;
         }
+
+        div:has(> .spinner-container) {
+            position: relative;
+        }
+
+        .spinner-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
     </style>
 </head>
 <body>
@@ -54,10 +65,15 @@
         <div v-if="!state.loading && !state.loadingError" class="col-fixed mb-5">
             <div class="mb-3">
                 <img class="profile-picture" src="/api/profile/picture" alt="Profile Picture">
+                <div v-if="state.uploadingImage" class="spinner-container">
+                    <div class="spinner-grow" style="width: 3rem; height: 3rem;"  role="status">
+                        <span class="sr-only">Uploading profile picture...</span>
+                    </div>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">Profile Picture</label>
-                <input class="form-control" type="file">
+                <input class="form-control" type="file" @change="handleFileUpload" :disabled="state.uploadingImage">
                 <p class="form-text">Image must be below 1024x1024px. Use PNG or JPG format.</p>
             </div>
             <div class="mb-3">
@@ -73,7 +89,7 @@
                 <input type="email" name="email" class="form-control" placeholder="" v-model="state.publicEmail">
             </div>
         </div>
-        `
+
         <div v-if="!state.loading && !state.loadingError" class="col-fixed d-flex flex-row gap-3 mb-3">
             <button @click="handleSave" :disabled="state.saving" class="btn btn-primary flex-grow-1">
                 <span v-if="state.saving" class="spinner-border spinner-border-sm" role="status"
@@ -101,7 +117,6 @@
 <script type="module">
     import {createApp, onMounted, reactive} from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
-
     const app = createApp({
         setup() {
             const state = reactive({
@@ -109,13 +124,14 @@
                 loadingError: null,
                 saving: false,
                 savingError: null,
+                uploadingImage: false,
                 firstName: '',
                 lastName: '',
                 publicEmail: '',
             });
 
             function updateStateFromResponse(resp) {
-                const {firstName, lastName, publicEmail} = resp.data;
+                const { firstName, lastName, publicEmail } = resp.data;
                 state.firstName = firstName;
                 state.lastName = lastName;
                 state.publicEmail = publicEmail;
@@ -153,9 +169,34 @@
                 })();
             });
 
+            const handleFileUpload = (e) => {
+                (async () => {
+                    try {
+                        state.uploadingImage = true;
+                        const file = e.target.files[0];
+                        const data = new FormData();
+                        data.set("file", file);
+                        await axios.post('/api/profile/picture', data, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data',
+                            }
+                        });
+                        const imgEl = document.querySelector('img.profile-picture');
+                        if (imgEl !== null) {
+                            imgEl.setAttribute('src', `/api/profile/picture?ts=${Date.now()}`)
+                        }
+                    } catch (err) {
+                        state.savingError = err.message;
+                    } finally {
+                        state.uploadingImage = false;
+                    }
+                })();
+            };
+
             return {
                 state,
                 handleSave,
+                handleFileUpload,
             };
         },
         template: `#mainTemplate`
@@ -163,6 +204,5 @@
 
     app.mount("#main");
 </script>
-
 </body>
 </html>
