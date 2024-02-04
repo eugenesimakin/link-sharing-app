@@ -92,7 +92,6 @@ class AppTests {
     }
 
     @Test
-    @Disabled("Disabled until links functionality implemented")
     void addRemoveSaveLinks() throws InterruptedException {
         WebDriver driver = sConfig.getDriver();
 
