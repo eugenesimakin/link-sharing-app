@@ -6,17 +6,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
-import java.util.Map;
+import java.util.List;
 
 @Converter(autoApply = true)
-public class LinksJsonConverter implements AttributeConverter<Map<String, Link>, String> {
+public class LinksJsonConverter implements AttributeConverter<List<Link>, String> {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
-    private static final TypeReference<Map<String, Link>> TYPE_REF = new TypeReference<>() {
+    private static final TypeReference<List<Link>> TYPE_REF = new TypeReference<>() {
     };
 
     @Override
-    public String convertToDatabaseColumn(Map<String, Link> links) {
+    public String convertToDatabaseColumn(List<Link> links) {
         try {
             return MAPPER.writeValueAsString(links);
         } catch (JsonProcessingException e) {
@@ -25,7 +25,7 @@ public class LinksJsonConverter implements AttributeConverter<Map<String, Link>,
     }
 
     @Override
-    public Map<String, Link> convertToEntityAttribute(String dbData) {
+    public List<Link> convertToEntityAttribute(String dbData) {
         try {
             return MAPPER.readValue(dbData, TYPE_REF);
         } catch (JsonProcessingException e) {

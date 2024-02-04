@@ -18,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.*;
+import java.util.List;
 
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 
@@ -42,9 +42,7 @@ public class ApiRestController {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
 
-        List<Link> list = userProfile.getLinks().values().stream().toList();
-
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return new ResponseEntity<>(userProfile.getLinks(), HttpStatus.OK);
     }
 
     @PostMapping("/links")
@@ -52,11 +50,7 @@ public class ApiRestController {
 
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
 
-        Map<String, Link> map = new HashMap<>();
-        for (int i = 0; i < links.size(); i++) {
-            map.put(links.get(i).getTitle(), links.get(i));
-        }
-        userProfile.setLinks(map);
+        userProfile.setLinks(links);
 
         profileRepository.save(userProfile);
 
