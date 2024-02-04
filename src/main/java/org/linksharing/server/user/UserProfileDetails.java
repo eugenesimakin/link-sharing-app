@@ -5,8 +5,8 @@ import lombok.Data;
 import org.linksharing.server.links.Link;
 import org.linksharing.server.links.LinksJsonConverter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -31,6 +31,6 @@ public class UserProfileDetails {
 
     @Column(name = "links")
     @Convert(converter = LinksJsonConverter.class)
-    private Map<String, Link> links = new HashMap<>();
+    private List<Link> links = new ArrayList<>();
 
 }

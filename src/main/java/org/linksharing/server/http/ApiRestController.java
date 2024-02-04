@@ -39,12 +39,22 @@ public class ApiRestController {
 
     @GetMapping("/links")
     ResponseEntity<List<Link>> getLinks(Principal user) {
-        return null;
+
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        return new ResponseEntity<>(userProfile.getLinks(), HttpStatus.OK);
     }
 
     @PostMapping("/links")
     ResponseEntity<List<Link>> updateLinks(Principal user, @RequestBody List<Link> links) {
-        return null;
+
+        UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        userProfile.setLinks(links);
+
+        profileRepository.save(userProfile);
+
+        return new ResponseEntity<>(links, HttpStatus.OK);
     }
 
     @GetMapping("/profile")
