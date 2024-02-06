@@ -58,3 +58,5 @@ gradle-app.setting
 pics/
 
 # End of https://www.toptal.com/developers/gitignore/api/java,gradle
+
+*.db
