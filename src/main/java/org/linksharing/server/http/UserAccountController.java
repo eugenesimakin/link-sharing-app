@@ -4,12 +4,18 @@ import org.linksharing.server.user.User;
 import org.linksharing.server.user.UserProfileDetails;
 import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.linksharing.server.user.UserRepository;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.PathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+
+import static org.springframework.http.MediaType.IMAGE_JPEG;
 
 @Controller
 public class UserAccountController {
@@ -40,8 +46,9 @@ public class UserAccountController {
     @GetMapping("/public")
     public ModelAndView personalPublicPage(Principal user) {
 
-        ModelAndView modelAndView = new ModelAndView("public_page");
         UserProfileDetails details = profileRepository.findByEmail(user.getName());
+
+        ModelAndView modelAndView = new ModelAndView("public_page");
         modelAndView.addObject("details", details);
 
         return modelAndView;
@@ -56,6 +63,24 @@ public class UserAccountController {
         modelAndView.addObject("details", details);
 
         return modelAndView;
+    }
+
+    @GetMapping("/public/picture/{email}")
+    ResponseEntity<Resource> getProfilePicture(@PathVariable(value="email") final String email) {
+
+        UserProfileDetails userProfile = profileRepository.findByEmail(email);
+        Resource imgResource;
+
+        if (userProfile.getImageUrl() != null) {
+            imgResource = new PathResource(userProfile.getImageUrl());
+        } else {
+            imgResource = new ClassPathResource("static/placeholder.jpg");
+        }
+
+        return ResponseEntity
+                .ok()
+                .contentType(IMAGE_JPEG)
+                .body(imgResource);
     }
 
 }

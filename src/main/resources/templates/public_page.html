@@ -61,7 +61,7 @@
             Please, contact the person who shared this with you.
         </p>
     </div>
-    <img class="profile-picture" th:src="${details.getImageUrl}" alt="Profile picture">
+    <img class="profile-picture" th:src="@{${'/public/picture/' + details.getEmail}}" alt="Profile picture">
     <h1 class="profile-fullname" th:text="${details.getFirstName + ' ' + details.getLastName}"></h1>
     <p class="public-email" th:text="${details.getPublicEmail}"></p>
     <div class="links">
