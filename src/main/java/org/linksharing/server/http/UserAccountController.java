@@ -44,12 +44,14 @@ public class UserAccountController {
     }
 
     @GetMapping("/public")
-    public ModelAndView personalPublicPage(Principal user) {
+    public ModelAndView personalPublicPage(Principal principalUser) {
 
-        UserProfileDetails details = profileRepository.findByEmail(user.getName());
+        UserProfileDetails details = profileRepository.findByEmail(principalUser.getName());
+        User user = userRepository.findByEmail(principalUser.getName());
 
         ModelAndView modelAndView = new ModelAndView("public_page");
         modelAndView.addObject("details", details);
+        modelAndView.addObject("username", user.getUsername());
 
         return modelAndView;
     }
@@ -60,7 +62,9 @@ public class UserAccountController {
         ModelAndView modelAndView = new ModelAndView("public_page");
         User user = userRepository.findByUsername(username);
         UserProfileDetails details = profileRepository.findByEmail(user.getEmail());
+
         modelAndView.addObject("details", details);
+        modelAndView.addObject("username", user.getUsername());
 
         return modelAndView;
     }

@@ -42,6 +42,11 @@
             margin-bottom: 3rem;
         }
 
+        .public-link {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
         .links {
             display: flex;
             flex-direction: column;
@@ -61,6 +66,12 @@
             Please, contact the person who shared this with you.
         </p>
     </div>
+
+    <div class="public-link">
+        <h6>Copy link to share your profile:</h6>
+        <span th:text="${'http://localhost:8080/public/' + username}"></span>
+    </div>
+
     <img class="profile-picture" th:src="@{${'/public/picture/' + details.getEmail}}" alt="Profile picture">
     <h1 class="profile-fullname" th:text="${details.getFirstName + ' ' + details.getLastName}"></h1>
     <p class="public-email" th:text="${details.getPublicEmail}"></p>
