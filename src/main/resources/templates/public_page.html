@@ -56,7 +56,7 @@
 </head>
 <body>
 
-<nav th:replace="~{fragments/profile_navbar}"></nav>
+<nav th:if="${owner != null}" th:replace="${owner != null} ? ~{fragments/profile_navbar} : ~{}"></nav>
 
 <div class="container">
     <div th:if="${notFound != null}" class="alert alert-warning" role="alert">
@@ -68,9 +68,9 @@
     </div>
 
     <div th:if="${notFound == null}">
-        <div class="public-link">
+        <div th:if="${owner != null}" class="public-link">
             <h6>Copy link to share your profile:</h6>
-            <span th:text="${'http://localhost:8080/public/' + username}"></span>
+            <a th:href="${'http://localhost:8080/public/' + username}" th:text="${'http://localhost:8080/public/' + username}"></a>
         </div>
 
         <img class="profile-picture" th:src="@{${'/public/picture/' + details.getEmail}}" alt="Profile picture">

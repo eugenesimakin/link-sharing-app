@@ -52,6 +52,7 @@ public class UserAccountController {
         ModelAndView modelAndView = new ModelAndView("public_page");
         modelAndView.addObject("details", details);
         modelAndView.addObject("username", user.getUsername());
+        modelAndView.addObject("owner", "owner");
 
         return modelAndView;
     }
@@ -71,6 +72,7 @@ public class UserAccountController {
 
         modelAndView.addObject("details", details);
         modelAndView.addObject("username", user.getUsername());
+        modelAndView.addObject("owner", null);
 
         return modelAndView;
     }
