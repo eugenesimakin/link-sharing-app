@@ -61,6 +61,12 @@ public class UserAccountController {
 
         ModelAndView modelAndView = new ModelAndView("public_page");
         User user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            modelAndView.addObject("notFound", "notNull");
+            return modelAndView;
+        }
+
         UserProfileDetails details = profileRepository.findByEmail(user.getEmail());
 
         modelAndView.addObject("details", details);

@@ -67,19 +67,22 @@
         </p>
     </div>
 
-    <div class="public-link">
-        <h6>Copy link to share your profile:</h6>
-        <span th:text="${'http://localhost:8080/public/' + username}"></span>
+    <div th:if="${notFound == null}">
+        <div class="public-link">
+            <h6>Copy link to share your profile:</h6>
+            <span th:text="${'http://localhost:8080/public/' + username}"></span>
+        </div>
+
+        <img class="profile-picture" th:src="@{${'/public/picture/' + details.getEmail}}" alt="Profile picture">
+        <h1 class="profile-fullname" th:text="${details.getFirstName + ' ' + details.getLastName}"></h1>
+        <p class="public-email" th:text="${details.getPublicEmail}"></p>
+        <div class="links">
+            <th:block th:each="link : ${details.getLinks}">
+                <a class="btn btn-outline-dark btn-lg" th:href="${link.getUrl}" th:text="${link.getTitle}"></a>
+            </th:block>
+        </div>
     </div>
 
-    <img class="profile-picture" th:src="@{${'/public/picture/' + details.getEmail}}" alt="Profile picture">
-    <h1 class="profile-fullname" th:text="${details.getFirstName + ' ' + details.getLastName}"></h1>
-    <p class="public-email" th:text="${details.getPublicEmail}"></p>
-    <div class="links">
-        <th:block th:each="link : ${details.getLinks}">
-            <a class="btn btn-outline-dark btn-lg" th:href="${link.getUrl}" th:text="${link.getTitle}"></a>
-        </th:block>
-    </div>
 </div>
 
 </body>
