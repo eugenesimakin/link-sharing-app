@@ -75,6 +75,10 @@
                 <label class="form-label">Profile Picture</label>
                 <input class="form-control" type="file" @change="handleFileUpload" :disabled="state.uploadingImage">
                 <p class="form-text">Image must be below 1024x1024px. Use PNG or JPG format.</p>
+<!--            <div v-if="state.savingError" class="col-fixed alert alert-danger">       -->
+                <div class="col-fixed alert alert-danger">
+                    <h5 class="alert-heading">{{ state.message }}</h5>
+                </div>
             </div>
             <div class="mb-3">
                 <label class="form-label">First Name</label>
@@ -120,6 +124,7 @@
     const app = createApp({
         setup() {
             const state = reactive({
+                message: null,
                 loading: true,
                 loadingError: null,
                 saving: false,
@@ -135,6 +140,11 @@
                 state.firstName = firstName;
                 state.lastName = lastName;
                 state.publicEmail = publicEmail;
+            }
+
+            function getMessageFromResponse(resp) {
+                const message = resp.data;
+                state.message = message;
             }
 
             const handleSave = () => {
@@ -180,6 +190,8 @@
                             headers: {
                                 'Content-Type': 'multipart/form-data',
                             }
+                        }).then(response => {
+                            state.message = response.data
                         });
                         const imgEl = document.querySelector('img.profile-picture');
                         if (imgEl !== null) {

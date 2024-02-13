@@ -7,20 +7,26 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.springframework.http.MediaType.IMAGE_JPEG;
+import static org.springframework.http.MediaType.*;
 
 @RestController
 @RequestMapping("/api")
@@ -103,8 +109,15 @@ public class ApiRestController {
     }
 
     @PostMapping("/profile/picture")
-    ResponseEntity<UserProfileDetails> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
+    ResponseEntity<?> updateProfilePicture(Principal user, @RequestParam("file") MultipartFile file) throws IOException {
+
         UserProfileDetails userProfile = profileRepository.findByEmail(user.getName());
+
+        BufferedImage image = ImageIO.read(file.getInputStream());
+
+        if (image.getHeight() >= 1024 || image.getWidth() >= 1024) {
+            return new ResponseEntity<>("Image must be below 1024x1024px.", HttpStatus.OK); //try to change for FORBIDDEN
+        }
 
         String[] fileNameParts = file.getOriginalFilename().split("\\.");
         String fileExtension = "." + fileNameParts[fileNameParts.length - 1];
@@ -122,7 +135,7 @@ public class ApiRestController {
         userProfile.setImageUrl(String.valueOf(newFileName));
         profileRepository.save(userProfile);
 
-        return new ResponseEntity<>(userProfile, HttpStatus.OK);
+        return new ResponseEntity<>("Save success", HttpStatus.OK);
     }
 
 }
