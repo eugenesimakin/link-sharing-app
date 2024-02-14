@@ -75,8 +75,7 @@
                 <label class="form-label">Profile Picture</label>
                 <input class="form-control" type="file" @change="handleFileUpload" :disabled="state.uploadingImage">
                 <p class="form-text">Image must be below 1024x1024px. Use PNG or JPG format.</p>
-<!--            <div v-if="state.savingError" class="col-fixed alert alert-danger">       -->
-                <div class="col-fixed alert alert-danger">
+                <div v-if="state.savingError" class="col-fixed alert alert-danger">
                     <h5 class="alert-heading">{{ state.message }}</h5>
                 </div>
             </div>
@@ -199,6 +198,7 @@
                         }
                     } catch (err) {
                         state.savingError = err.message;
+                        state.message = err.response.data;
                     } finally {
                         state.uploadingImage = false;
                     }

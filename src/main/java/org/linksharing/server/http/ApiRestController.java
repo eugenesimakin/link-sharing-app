@@ -6,6 +6,7 @@ import org.linksharing.server.user.UserProfileDetailsRepository;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -116,7 +117,7 @@ public class ApiRestController {
         BufferedImage image = ImageIO.read(file.getInputStream());
 
         if (image.getHeight() >= 1024 || image.getWidth() >= 1024) {
-            return new ResponseEntity<>("Image must be below 1024x1024px.", HttpStatus.OK); //try to change for FORBIDDEN
+            return new ResponseEntity<>("Image must be below 1024x1024px.", HttpStatus.FORBIDDEN);
         }
 
         String[] fileNameParts = file.getOriginalFilename().split("\\.");
@@ -135,7 +136,7 @@ public class ApiRestController {
         userProfile.setImageUrl(String.valueOf(newFileName));
         profileRepository.save(userProfile);
 
-        return new ResponseEntity<>("Save success", HttpStatus.OK);
+        return new ResponseEntity<>("Upload success", HttpStatus.OK);
     }
 
 }
