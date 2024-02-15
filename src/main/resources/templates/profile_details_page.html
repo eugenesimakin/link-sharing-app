@@ -75,8 +75,8 @@
                 <label class="form-label">Profile Picture</label>
                 <input class="form-control" type="file" @change="handleFileUpload" :disabled="state.uploadingImage">
                 <p class="form-text">Image must be below 1024x1024px. Use JPG format.</p>
-                <div v-if="state.savingError" class="col-fixed alert alert-danger">
-                    <p class="alert-heading">{{ state.imageUploadResponse }}</p>
+                <div v-if="state.imageUploadError" class="col-fixed alert alert-danger">
+                    <p class="alert-heading">{{ state.imageUploadError }}</p>
                 </div>
             </div>
             <div class="mb-3">
@@ -123,12 +123,12 @@
     const app = createApp({
         setup() {
             const state = reactive({
-                imageUploadResponse: null,
                 loading: true,
                 loadingError: null,
                 saving: false,
                 savingError: null,
                 uploadingImage: false,
+                imageUploadError: null,
                 firstName: '',
                 lastName: '',
                 publicEmail: '',
@@ -177,6 +177,7 @@
                 (async () => {
                     try {
                         state.uploadingImage = true;
+                        state.imageUploadError = null;
                         const file = e.target.files[0];
                         const data = new FormData();
                         data.set("file", file);
@@ -184,16 +185,13 @@
                             headers: {
                                 'Content-Type': 'multipart/form-data',
                             }
-                        }).then(response => {
-                            state.imageUploadResponse = response.data
                         });
                         const imgEl = document.querySelector('img.profile-picture');
                         if (imgEl !== null) {
                             imgEl.setAttribute('src', `/api/profile/picture?ts=${Date.now()}`)
                         }
                     } catch (err) {
-                        state.savingError = err.message;
-                        state.imageUploadResponse = err.response.data;
+                        state.imageUploadError = err.response.data;
                     } finally {
                         state.uploadingImage = false;
                     }
