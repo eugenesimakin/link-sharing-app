@@ -15,12 +15,12 @@
 
     <style>
         @media (min-width: 768px) {
-            .container {
+            .page-container {
                 width: 600px;
             }
         }
 
-        .container {
+        .page-container {
             margin-top: 1rem;
         }
 
@@ -58,7 +58,7 @@
 
 <nav th:if="${owner != null}" th:replace="${owner != null} ? ~{fragments/profile_navbar} : ~{}"></nav>
 
-<div class="container">
+<div class="container page-container">
     <div th:if="${notFound != null}" class="alert alert-warning" role="alert">
         <h4 class="alert-heading">404</h4>
         <p>
